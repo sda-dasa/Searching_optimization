@@ -18,6 +18,7 @@
             <option value="1">TestAlgorithm1</option>
             <option value="2">TestAlgorithm2</option>
             <option value="3">GradientDescent</option>
+            <option value="4">Genetic Algorithm (ГА)</option>
         </select>
         <br>
         <div id="algo1Panel">
@@ -29,6 +30,11 @@
         <div id="algo3Panel" style="display: none;">
             <label>Learning rate: <input type="number" step="0.0001" value="0.01" id="lrInput"></label><br>
             <label>Количество траекторий: <input type="number" min="1" max="50" value="10" id="trajCountInput"></label>
+        </div>
+        <div id="algo4Panel" style="display: none;">
+            <label>Размер популяции: <input id="popSize" type="number" value="50" min="10" max="300"></label><br>
+            <label>Crossover (pc): <input id="pc" type="number" step="0.05" value="0.85" min="0" max="1"></label><br>
+            <label>Mutation (pm): <input id="pm" type="number" step="0.001" value="0.01" min="0" max="0.1"></label>
         </div>
     </div>
 

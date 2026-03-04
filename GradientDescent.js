@@ -3,12 +3,12 @@ export default class GradientDescent {
         this.funcClass = funcClass;
         this.numTrajectories = numTrajectories; 
         this.learningRate = learningRate;     
-        this.maxIterations = 100;
+        this.maxIterations = 300;
         this.currentIter = 0;
 
         this.trajectories = [];
 
-        const bounds = [-10, 10];
+        const bounds = [-5, 5];
 
         for (let i = 0; i < this.numTrajectories; i++) {
             const startX = Math.random() * (bounds[1] - bounds[0]) + bounds[0];
@@ -59,6 +59,7 @@ export default class GradientDescent {
             const newX = current.x - this.learningRate * grad.dx;
             const newY = current.y - this.learningRate * grad.dy;
 
+            console.log('x, y, z', current.x, current.y, this.evaluate(current.x, current.y));
             traj.push({ x: newX, y: newY });
         }
 

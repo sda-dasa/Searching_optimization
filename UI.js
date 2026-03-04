@@ -8,6 +8,7 @@ import RosenbrockFunction from './RosenbrockFunction.js';
 import TestAlgorithm1 from './TestAlgorithm1.js';
 import TestAlgorithm2 from './TestAlgorithm2.js';
 import GradientDescent from './GradientDescent.js';
+import GeneticAlgorithm from './GeneticAlgorithm.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -24,8 +25,13 @@ const algo2Panel = document.getElementById('algo2Panel');
 const maxIter = document.getElementById('maxIter');
 const xMin = document.getElementById('xMin');
 const algo3Panel = document.getElementById('algo3Panel');
+const algo4Panel = document.getElementById('algo4Panel');
 const lrInput = document.getElementById('lrInput');
 const trajCountInput = document.getElementById('trajCountInput');
+
+const popSizeInput = document.getElementById('popSize');
+const pcInput = document.getElementById('pc');
+const pmInput = document.getElementById('pm');
 
 const functions = {
     '1': Func1, '2': Func2, '3': SphereFunction,
@@ -102,6 +108,13 @@ algoSelector.addEventListener('change', (e) => {
         const lr = parseFloat(lrInput.value) || 0.01;
         const trajCount = parseInt(trajCountInput.value) || 10;
         newAlgo = new GradientDescent(funcClass,trajCount, lr);
+    } else if (e.target.value === '4') {
+        newAlgo = new GeneticAlgorithm(
+            funcClass,
+            parseInt(popSizeInput.value) || 50,
+            parseFloat(pcInput.value) || 0.8,
+            parseFloat(pmInput.value) || 0.01
+        );
     }
 
     algorithm = newAlgo;
@@ -109,6 +122,7 @@ algoSelector.addEventListener('change', (e) => {
     algo1Panel.style.display = e.target.value === '1' ? 'block' : 'none';
     algo2Panel.style.display = e.target.value === '2' ? 'block' : 'none';
     algo3Panel.style.display = e.target.value === '3' ? 'block' : 'none';
+    algo4Panel.style.display = e.target.value === '4' ? 'block' : 'none';
     startAnimation();
 });
 
@@ -116,6 +130,11 @@ maxIter.addEventListener('input', () => { if (algorithm instanceof TestAlgorithm
 xMin.addEventListener('change', () => { if (algorithm instanceof TestAlgorithm2) startAnimation(); });
 lrInput.addEventListener('input', () => {if (algorithm instanceof GradientDescent) startAnimation();});
 trajCountInput.addEventListener('input', () => {if (algorithm instanceof GradientDescent) startAnimation();});
+
+
+popSizeInput.addEventListener('change', () => { if (algorithm instanceof GeneticAlgorithm) startAnimation(); });
+pcInput.addEventListener('change', () => { if (algorithm instanceof GeneticAlgorithm) startAnimation(); });
+pmInput.addEventListener('change', () => { if (algorithm instanceof GeneticAlgorithm) startAnimation(); });
 
 scene.add(new THREE.AxesHelper(5));
 createFuncMesh();
