@@ -93,31 +93,14 @@ function startAnimation() {
 funcSelector.addEventListener('change', (e) => {
     funcClass = functions[e.target.value];
     createFuncMesh();
+
+    algorithm = createAlgorithm();
+    startAnimation();   
 });
 
 algoSelector.addEventListener('change', (e) => {
     if (iterInterval) clearInterval(iterInterval);
-
-    let newAlgo;
-
-    if (e.target.value === '1') {
-        newAlgo = new TestAlgorithm1();
-    } else if (e.target.value === '2') {
-        newAlgo = new TestAlgorithm2();
-    } else if (e.target.value === '3') {
-        const lr = parseFloat(lrInput.value) || 0.01;
-        const trajCount = parseInt(trajCountInput.value) || 10;
-        newAlgo = new GradientDescent(funcClass,trajCount, lr);
-    } else if (e.target.value === '4') {
-        newAlgo = new GeneticAlgorithm(
-            funcClass,
-            parseInt(popSizeInput.value) || 50,
-            parseFloat(pcInput.value) || 0.8,
-            parseFloat(pmInput.value) || 0.01
-        );
-    }
-
-    algorithm = newAlgo;
+    algorithm = createAlgorithm();
 
     algo1Panel.style.display = e.target.value === '1' ? 'block' : 'none';
     algo2Panel.style.display = e.target.value === '2' ? 'block' : 'none';
@@ -144,4 +127,29 @@ function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
 }
+
+function createAlgorithm() {
+    const algoType = algoSelector.value;
+
+    if (algoType === '1') {
+        return new TestAlgorithm1();
+    } 
+    else if (algoType === '2') {
+        return new TestAlgorithm2();
+    } 
+    else if (algoType === '3') {
+        const lr = parseFloat(lrInput.value) || 0.01;
+        const trajCount = parseInt(trajCountInput.value) || 10;
+        return new GradientDescent(funcClass, trajCount, lr);
+    } 
+    else if (algoType === '4') {
+        return new GeneticAlgorithm(
+            funcClass,
+            parseInt(popSizeInput.value) || 50,
+            parseFloat(pcInput.value) || 0.8,
+            parseFloat(pmInput.value) || 0.01
+        );
+    }
+}
+
 animate();
