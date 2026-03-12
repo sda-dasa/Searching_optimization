@@ -28,6 +28,9 @@ const algo3Panel = document.getElementById('algo3Panel');
 const algo4Panel = document.getElementById('algo4Panel');
 const lrInput = document.getElementById('lrInput');
 const trajCountInput = document.getElementById('trajCountInput');
+const pauseBtn = document.getElementById('pauseBtn');
+const restartBtn = document.getElementById('restartBtn');
+
 
 const popSizeInput = document.getElementById('popSize');
 const pcInput = document.getElementById('pc');
@@ -38,6 +41,7 @@ const functions = {
     '4': HimmelblauFunction, '5': RosenbrockFunction
 };
 
+let isPaused = false;
 let funcClass = Func1;
 let funcMesh = null;
 let algorithm = new TestAlgorithm1();
@@ -74,20 +78,21 @@ function createPointsMesh(points) {
 }
 
 function startAnimation() {
+    isPaused = false;
+    pauseBtn.textContent = "Pause";
+
     if (iterInterval) clearInterval(iterInterval);
+
     algorithm.currentIter = 0;
     algorithm.maxIterations = parseInt(maxIter.value);
-    if (algorithm instanceof TestAlgorithm2) algorithm.xMin = parseFloat(xMin.value);
-    
+
+    if (algorithm instanceof TestAlgorithm2)
+        algorithm.xMin = parseFloat(xMin.value);
+
     createPointsMesh(algorithm.getPopulation());
-    
-    iterInterval = setInterval(() => {
-        if (algorithm.currentIter >= algorithm.maxIterations) {
-            clearInterval(iterInterval);
-            return;
-        }
-        createPointsMesh(algorithm.nextIteration());
-    }, 500);
+
+    runIterations();
+
 }
 
 funcSelector.addEventListener('change', (e) => {
@@ -108,6 +113,44 @@ algoSelector.addEventListener('change', (e) => {
     algo4Panel.style.display = e.target.value === '4' ? 'block' : 'none';
     startAnimation();
 });
+
+
+restartBtn.addEventListener('click', () => {
+
+    algorithm = createAlgorithm();
+    startAnimation();
+
+});
+
+
+pauseBtn.addEventListener('click', () => {
+
+    if (!isPaused) {
+        clearInterval(iterInterval);
+        pauseBtn.textContent = "Resume";
+        isPaused = true;
+    } else {
+        runIterations();
+        pauseBtn.textContent = "Pause";
+        isPaused = false;
+    }
+
+});
+
+function runIterations() {
+
+    iterInterval = setInterval(() => {
+
+        if (algorithm.currentIter >= algorithm.maxIterations) {
+            clearInterval(iterInterval);
+            return;
+        }
+
+        createPointsMesh(algorithm.nextIteration());
+
+    }, 500);
+
+}
 
 maxIter.addEventListener('input', () => { if (algorithm instanceof TestAlgorithm1) startAnimation(); });
 xMin.addEventListener('change', () => { if (algorithm instanceof TestAlgorithm2) startAnimation(); });
