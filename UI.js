@@ -30,6 +30,7 @@ const lrInput = document.getElementById('lrInput');
 const trajCountInput = document.getElementById('trajCountInput');
 const pauseBtn = document.getElementById('pauseBtn');
 const restartBtn = document.getElementById('restartBtn');
+const pointsOutput = document.getElementById("pointsOutput");
 
 
 const popSizeInput = document.getElementById('popSize');
@@ -89,7 +90,9 @@ function startAnimation() {
     if (algorithm instanceof TestAlgorithm2)
         algorithm.xMin = parseFloat(xMin.value);
 
-    createPointsMesh(algorithm.getPopulation());
+    const points = algorithm.getPopulation();
+    createPointsMesh(points);
+    displayPoints(points);
 
     runIterations();
 
@@ -119,7 +122,6 @@ restartBtn.addEventListener('click', () => {
 
     algorithm = createAlgorithm();
     startAnimation();
-
 });
 
 
@@ -146,10 +148,29 @@ function runIterations() {
             return;
         }
 
-        createPointsMesh(algorithm.nextIteration());
+        const points = algorithm.nextIteration();
+        createPointsMesh(points);
+        displayPoints(points);
 
     }, 500);
 
+}
+
+function displayPoints(points) {
+
+    const maxPoints = Math.min(points.length, 10);
+    let text = "";
+
+    for (let i = 0; i < maxPoints; i++) {
+        const p = points[i];
+        text += `Point ${i}: x=${p.x.toFixed(3)}  y=${p.y.toFixed(3)}  z=${p.z.toFixed(3)}\n`;
+    }
+
+    if (points.length > 10) {
+        text += `\n... (${points.length - 10} more points)`;
+    }
+
+    pointsOutput.textContent = text;
 }
 
 maxIter.addEventListener('input', () => { if (algorithm instanceof TestAlgorithm1) startAnimation(); });
