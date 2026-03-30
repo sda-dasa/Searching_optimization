@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import Func1 from './Func1.js';
-import Func2 from './Func2.js';
+// import Func1 from './Func1.js';
+// import Func2 from './Func2.js';
 import SphereFunction from './SphereFunction.js';
 import HimmelblauFunction from './HimmelblauFunction.js';
 import RosenbrockFunction from './RosenbrockFunction.js';
@@ -44,35 +44,55 @@ const pcInput = document.getElementById('pc');
 const pmInput = document.getElementById('pm');
 
 const functions = {
-    '1': Func1, '2': Func2, '3': SphereFunction,
-    '4': HimmelblauFunction, '5': RosenbrockFunction
+    '1': SphereFunction, '2': HimmelblauFunction, '3': RosenbrockFunction
 };
 
 let isPaused = false;
-let funcClass = Func1;
+let funcClass = SphereFunction;
 let funcMesh = null;
 let algorithm = new TestAlgorithm1();
 let pointsMesh = null;
 let iterInterval = null;
 
+// function createFuncMesh() {
+//     if (funcMesh) scene.remove(funcMesh);
+//     const points = funcClass.getPoints();
+//     const geometry = new THREE.BufferGeometry();
+//     const positions = [];
+//     const colors = [];
+    
+//     points.forEach(p => {
+//         positions.push(p.y, p.z, p.x);
+//         const col = funcClass.getColor(p.z);
+//         colors.push(((col >> 16) & 255)/255, ((col >> 8) & 255)/255, (col & 255)/255);
+//     });
+    
+//     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+//     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+//     funcMesh = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 0.1, vertexColors: true }));
+//     scene.add(funcMesh);
+// }
+
+
+
 function createFuncMesh() {
     if (funcMesh) scene.remove(funcMesh);
-    const points = funcClass.getPoints();
-    const geometry = new THREE.BufferGeometry();
-    const positions = [];
-    const colors = [];
     
-    points.forEach(p => {
-        positions.push(p.y, p.z, p.x);
-        const col = funcClass.getColor(p.z);
-        colors.push(((col >> 16) & 255)/255, ((col >> 8) & 255)/255, (col & 255)/255);
-    });
     
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-    funcMesh = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 0.1, vertexColors: true }));
+    funcMesh = funcClass.getSurfaceMesh(5, 80);
     scene.add(funcMesh);
+    
+    
+    if (!window.lightsAdded) {
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(1, 2, 1);
+        scene.add(ambientLight);
+        scene.add(directionalLight);
+        window.lightsAdded = true;
+    }
 }
+
 
 function createPointsMesh(points) {
     if (pointsMesh) scene.remove(pointsMesh);
