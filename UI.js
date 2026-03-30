@@ -9,6 +9,7 @@ import TestAlgorithm1 from './TestAlgorithm1.js';
 import TestAlgorithm2 from './TestAlgorithm2.js';
 import GradientDescent from './GradientDescent.js';
 import GeneticAlgorithm from './GeneticAlgorithm.js';
+import ParticleSwarm from './ParticleSwarm.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -26,11 +27,16 @@ const maxIter = document.getElementById('maxIter');
 const xMin = document.getElementById('xMin');
 const algo3Panel = document.getElementById('algo3Panel');
 const algo4Panel = document.getElementById('algo4Panel');
+const algo5Panel = document.getElementById('algo5Panel');
 const lrInput = document.getElementById('lrInput');
 const trajCountInput = document.getElementById('trajCountInput');
 const pauseBtn = document.getElementById('pauseBtn');
 const restartBtn = document.getElementById('restartBtn');
 const pointsOutput = document.getElementById("pointsOutput");
+const swarmSizeInput = document.getElementById('swarmSize');
+const inertiaInput = document.getElementById('inertia');
+const cognitiveInput = document.getElementById('cognitive');
+const socialInput = document.getElementById('social');
 
 
 const popSizeInput = document.getElementById('popSize');
@@ -114,6 +120,7 @@ algoSelector.addEventListener('change', (e) => {
     algo2Panel.style.display = e.target.value === '2' ? 'block' : 'none';
     algo3Panel.style.display = e.target.value === '3' ? 'block' : 'none';
     algo4Panel.style.display = e.target.value === '4' ? 'block' : 'none';
+    algo5Panel.style.display = e.target.value === '5' ? 'block' : 'none';
     startAnimation();
 });
 
@@ -172,7 +179,11 @@ function displayPoints(points) {
 
     pointsOutput.textContent = text;
 }
-
+maxIter.addEventListener('input', () => { 
+    if (algorithm instanceof TestAlgorithm1 || 
+        algorithm instanceof GeneticAlgorithm || 
+        algorithm instanceof ParticleSwarm) startAnimation(); 
+});
 maxIter.addEventListener('input', () => { if (algorithm instanceof TestAlgorithm1) startAnimation(); });
 xMin.addEventListener('change', () => { if (algorithm instanceof TestAlgorithm2) startAnimation(); });
 lrInput.addEventListener('input', () => {if (algorithm instanceof GradientDescent) startAnimation();});
@@ -182,6 +193,11 @@ trajCountInput.addEventListener('input', () => {if (algorithm instanceof Gradien
 popSizeInput.addEventListener('change', () => { if (algorithm instanceof GeneticAlgorithm) startAnimation(); });
 pcInput.addEventListener('change', () => { if (algorithm instanceof GeneticAlgorithm) startAnimation(); });
 pmInput.addEventListener('change', () => { if (algorithm instanceof GeneticAlgorithm) startAnimation(); });
+
+swarmSizeInput.addEventListener('change', () => { if (algorithm instanceof ParticleSwarm) startAnimation(); });
+inertiaInput.addEventListener('change', () => { if (algorithm instanceof ParticleSwarm) startAnimation(); });
+cognitiveInput.addEventListener('change', () => { if (algorithm instanceof ParticleSwarm) startAnimation(); });
+socialInput.addEventListener('change', () => { if (algorithm instanceof ParticleSwarm) startAnimation(); });
 
 scene.add(new THREE.AxesHelper(5));
 createFuncMesh();
@@ -212,6 +228,15 @@ function createAlgorithm() {
             parseInt(popSizeInput.value) || 50,
             parseFloat(pcInput.value) || 0.8,
             parseFloat(pmInput.value) || 0.01
+        );
+    }
+    else if (algoType === '5') {
+        return new ParticleSwarm(
+            funcClass,
+            parseInt(document.getElementById('swarmSize').value) || 50,
+            parseFloat(document.getElementById('inertia').value) || 0.7,
+            parseFloat(document.getElementById('cognitive').value) || 1.5,
+            parseFloat(document.getElementById('social').value) || 1.5
         );
     }
 }
