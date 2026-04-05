@@ -10,6 +10,7 @@ import TestAlgorithm2 from './TestAlgorithm2.js';
 import GradientDescent from './GradientDescent.js';
 import GeneticAlgorithm from './GeneticAlgorithm.js';
 import ParticleSwarm from './ParticleSwarm.js';
+import BeesAlgorithm from './BeesAlgorithm.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -141,6 +142,8 @@ algoSelector.addEventListener('change', (e) => {
     algo3Panel.style.display = e.target.value === '3' ? 'block' : 'none';
     algo4Panel.style.display = e.target.value === '4' ? 'block' : 'none';
     algo5Panel.style.display = e.target.value === '5' ? 'block' : 'none';
+    algo6Panel.style.display = e.target.value === '6' ? 'block' : 'none';
+    
     startAnimation();
 });
 
@@ -219,6 +222,15 @@ inertiaInput.addEventListener('change', () => { if (algorithm instanceof Particl
 cognitiveInput.addEventListener('change', () => { if (algorithm instanceof ParticleSwarm) startAnimation(); });
 socialInput.addEventListener('change', () => { if (algorithm instanceof ParticleSwarm) startAnimation(); });
 
+
+maxIter.addEventListener('input', () => { 
+    if (algorithm instanceof TestAlgorithm1 || 
+        algorithm instanceof GeneticAlgorithm || 
+        algorithm instanceof ParticleSwarm || 
+        algorithm instanceof BeesAlgorithm) startAnimation(); 
+});
+
+
 scene.add(new THREE.AxesHelper(5));
 createFuncMesh();
 startAnimation();
@@ -258,6 +270,9 @@ function createAlgorithm() {
             parseFloat(document.getElementById('cognitive').value) || 1.5,
             parseFloat(document.getElementById('social').value) || 1.5
         );
+    }
+    else if (algoType === '6') {
+        return new BeesAlgorithm(funcClass);
     }
 }
 

@@ -27,7 +27,7 @@ export default class ParticleSwarm {
                 x: (Math.random() - 0.5) * 2,
                 y: (Math.random() - 0.5) * 2
             },
-            pbest: null,           
+            pbest: null,        
             pbestValue: Infinity
         };
     }
@@ -50,7 +50,6 @@ export default class ParticleSwarm {
         let globalBest = null;
         let globalBestValue = Infinity;
 
-        
         for (let particle of this.particles) {
             const value = this.evaluate(particle.position);
 
