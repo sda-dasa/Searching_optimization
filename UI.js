@@ -11,6 +11,7 @@ import ParticleSwarm from './ParticleSwarm.js';
 import BeesAlgorithm from './BeesAlgorithm.js';
 import SchafferN2Function from './SchafferN2Function.js';
 import StyblinskiTangFunction from './StyblinskiTangFunction.js';
+import RastriginFunction from './RastriginFunction.js';
 
 
 const scene = new THREE.Scene();
@@ -48,7 +49,8 @@ const pmInput = document.getElementById('pm');
 const functions = {
     '1': SphereFunction, '2': HimmelblauFunction, '3': RosenbrockFunction,
     '4': SchafferN2Function,
-    '5': StyblinskiTangFunction    
+    '5': StyblinskiTangFunction, 
+    '6': RastriginFunction
 };
 
 let isPaused = false;
