@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export default class RosenbrockFunction {
     
-    static getPoints(range = 20, steps = 100) {
+    static getPoints(range = 3, steps = 20) {
         const points = [];
         const step = (range * 2) / steps;
         for (let i = 0; i <= steps; i++) {
@@ -18,7 +18,7 @@ export default class RosenbrockFunction {
 
 
 
-    static getColor(z, minZ = 0, maxZ = 50) {
+    static getColor(z, maxZ = 10) {
         const t = Math.min(z / maxZ, 1);
 
         const r = Math.floor(255 * t);
@@ -28,11 +28,13 @@ export default class RosenbrockFunction {
     }
 
     static evaluate(x,y){
-        return (1/5)*((1-x)**2 + 100*(y - x*x)**2);
+        let result= (1/500)*((1-x)**2 + 100*(y - x*x)**2);
+        if (result > 15) {return 15;}
+        return result;
     }
 
 
-    static getSurfaceMesh(range = 5, segments = 50) {
+    static getSurfaceMesh(range = 3, segments = 20) {
         const geometry = new THREE.BufferGeometry();
         const vertices = [];
         const indices = [];

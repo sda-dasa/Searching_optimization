@@ -9,9 +9,9 @@ import GradientDescent from './GradientDescent.js';
 import GeneticAlgorithm from './GeneticAlgorithm.js';
 import ParticleSwarm from './ParticleSwarm.js';
 import BeesAlgorithm from './BeesAlgorithm.js';
-import BeesAlgorithm from './SchafferN2Function.js';
-//import BeesAlgorithm from './StyblinskiTangFunction.js';
-//import BeesAlgorithm from './CrossInTrayFunction.js';
+import SchafferN2Function from './SchafferN2Function.js';
+import StyblinskiTangFunction from './StyblinskiTangFunction.js';
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -47,8 +47,8 @@ const pmInput = document.getElementById('pm');
 
 const functions = {
     '1': SphereFunction, '2': HimmelblauFunction, '3': RosenbrockFunction,
-    '4': ShafferN2Function
-    //'5': StyblinskiTangFunction, '6': CrossInTrayFunction
+    '4': SchafferN2Function,
+    '5': StyblinskiTangFunction    
 };
 
 let isPaused = false;

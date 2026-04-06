@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 
 export default class HimmelblauFunction {
-    static getPoints(range = 5, steps = 100) {
+    static getPoints(range = 10, steps = 50) {
         const points = [];
         const step = (range * 2) / steps;
         for (let i = 0; i <= steps; i++) {
@@ -16,7 +16,7 @@ export default class HimmelblauFunction {
         return points;
     }
 
-    static getColor(z, maxZ = 50) {
+    static getColor(z, maxZ = 10) {
         const t = Math.min(z / maxZ, 1);
 
         const r = Math.floor(255 * t);
@@ -26,12 +26,12 @@ export default class HimmelblauFunction {
     }
 
     static evaluate(x,y){
-        return (1/5)*((x*x + y - 11)**2 + (x + y*y - 7)**2);
+        return (1/150)*((x*x + y - 11)**2 + (x + y*y - 7)**2);
     }
 
 
 
-    static getSurfaceMesh(range = 5, segments = 50) {
+    static getSurfaceMesh(range = 10, segments = 50) {
         const geometry = new THREE.BufferGeometry();
         const vertices = [];
         const indices = [];

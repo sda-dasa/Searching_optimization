@@ -1,21 +1,21 @@
 import * as THREE from 'three';
 
 export default class SchafferN2Function {
-    static getPoints(range = 100, steps = 100) {
+    static getPoints(range = 3, steps = 10) {
         const points = [];
         const step = (range * 2) / steps;
         for (let i = 0; i <= steps; i++) {
             const x = -range + i * step;
             for (let j = 0; j <= steps; j++) {
                 const y = -range + j * step;
-                const z = this.evaluate(x, y);
+                const z = this.evaluate(x/10, y);
                 points.push({ z, y, x });
             }
         }
         return points;
     }
 
-    static getColor(z, maxZ = 1.2) {
+    static getColor(z, maxZ = 5) {
         const t = Math.min(z / maxZ, 1);
         const r = Math.floor(255 * t);
         const g = 255;
@@ -26,10 +26,10 @@ export default class SchafferN2Function {
     static evaluate(x, y) {
         const numerator = Math.sin(x * x - y * y) ** 2 - 0.5;
         const denominator = (1 + 0.001 * (x * x + y * y)) ** 2;
-        return (1/3)*(0.5 + numerator / denominator);
+        return 3*(0.5 + numerator / denominator);
     }
 
-    static getSurfaceMesh(range = 100, segments = 100) {
+    static getSurfaceMesh(range = 3, segments = 10) {
         const geometry = new THREE.BufferGeometry();
         const vertices = [];
         const indices = [];
@@ -40,7 +40,7 @@ export default class SchafferN2Function {
             const x = -range + i * step;
             for (let j = 0; j <= segments; j++) {
                 const y = -range + j * step;
-                const z = this.evaluate(x, y);
+                const z = this.evaluate(x/10, y);
                 vertices.push(y, z, x);
             }
         }
