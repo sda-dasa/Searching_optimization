@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-// import Func1 from './Func1.js';
-// import Func2 from './Func2.js';
 import SphereFunction from './SphereFunction.js';
 import HimmelblauFunction from './HimmelblauFunction.js';
 import RosenbrockFunction from './RosenbrockFunction.js';
@@ -11,6 +9,9 @@ import GradientDescent from './GradientDescent.js';
 import GeneticAlgorithm from './GeneticAlgorithm.js';
 import ParticleSwarm from './ParticleSwarm.js';
 import BeesAlgorithm from './BeesAlgorithm.js';
+import BeesAlgorithm from './SchafferN2Function.js';
+//import BeesAlgorithm from './StyblinskiTangFunction.js';
+//import BeesAlgorithm from './CrossInTrayFunction.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -45,7 +46,9 @@ const pcInput = document.getElementById('pc');
 const pmInput = document.getElementById('pm');
 
 const functions = {
-    '1': SphereFunction, '2': HimmelblauFunction, '3': RosenbrockFunction
+    '1': SphereFunction, '2': HimmelblauFunction, '3': RosenbrockFunction,
+    '4': ShafferN2Function
+    //'5': StyblinskiTangFunction, '6': CrossInTrayFunction
 };
 
 let isPaused = false;

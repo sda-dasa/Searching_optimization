@@ -28,7 +28,7 @@ export default class RosenbrockFunction {
     }
 
     static evaluate(x,y){
-        return (1-x)**2 + 100*(y - x*x)**2;
+        return (1/5)*((1-x)**2 + 100*(y - x*x)**2);
     }
 
 

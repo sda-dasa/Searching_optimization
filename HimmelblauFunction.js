@@ -26,7 +26,7 @@ export default class HimmelblauFunction {
     }
 
     static evaluate(x,y){
-        return (x*x + y - 11)**2 + (x + y*y - 7)**2;
+        return (1/5)*((x*x + y - 11)**2 + (x + y*y - 7)**2);
     }
 
 
