@@ -9,10 +9,10 @@ import GradientDescent from './GradientDescent.js';
 import GeneticAlgorithm from './GeneticAlgorithm.js';
 import ParticleSwarm from './ParticleSwarm.js';
 import BeesAlgorithm from './BeesAlgorithm.js';
+import ArtificialImmuneNetwork from './ArtificialImmuneNetwork.js';
 import SchafferN2Function from './SchafferN2Function.js';
 import StyblinskiTangFunction from './StyblinskiTangFunction.js';
 import RastriginFunction from './RastriginFunction.js';
-
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -24,71 +24,58 @@ new OrbitControls(camera, renderer.domElement);
 
 const funcSelector = document.getElementById('funcSelector');
 const algoSelector = document.getElementById('algoSelector');
+
 const algo1Panel = document.getElementById('algo1Panel');
 const algo2Panel = document.getElementById('algo2Panel');
-const maxIter = document.getElementById('maxIter');
-const xMin = document.getElementById('xMin');
 const algo3Panel = document.getElementById('algo3Panel');
 const algo4Panel = document.getElementById('algo4Panel');
 const algo5Panel = document.getElementById('algo5Panel');
+const algo6Panel = document.getElementById('algo6Panel');
+const algo7Panel = document.getElementById('algo7Panel');
+
+const maxIter = document.getElementById('maxIter');
+const xMin = document.getElementById('xMin');
 const lrInput = document.getElementById('lrInput');
 const trajCountInput = document.getElementById('trajCountInput');
 const pauseBtn = document.getElementById('pauseBtn');
 const restartBtn = document.getElementById('restartBtn');
 const pointsOutput = document.getElementById("pointsOutput");
-const swarmSizeInput = document.getElementById('swarmSize');
-const inertiaInput = document.getElementById('inertia');
-const cognitiveInput = document.getElementById('cognitive');
-const socialInput = document.getElementById('social');
-
 
 const popSizeInput = document.getElementById('popSize');
 const pcInput = document.getElementById('pc');
 const pmInput = document.getElementById('pm');
 
+const swarmSizeInput = document.getElementById('swarmSize');
+const inertiaInput = document.getElementById('inertia');
+const cognitiveInput = document.getElementById('cognitive');
+const socialInput = document.getElementById('social');
+
+const immunePopSizeInput = document.getElementById('immunePopSize');
+const cloneMultiplierInput = document.getElementById('cloneMultiplier');
+const mutationRateInput = document.getElementById('mutationRate');
+const suppressionThresholdInput = document.getElementById('suppressionThreshold');
+
 const functions = {
-    '1': SphereFunction, '2': HimmelblauFunction, '3': RosenbrockFunction,
+    '1': SphereFunction,
+    '2': HimmelblauFunction,
+    '3': RosenbrockFunction,
     '4': SchafferN2Function,
-    '5': StyblinskiTangFunction, 
+    '5': StyblinskiTangFunction,
     '6': RastriginFunction
 };
 
 let isPaused = false;
 let funcClass = SphereFunction;
 let funcMesh = null;
-let algorithm = new TestAlgorithm1();
 let pointsMesh = null;
+let algorithm = new TestAlgorithm1();
 let iterInterval = null;
-
-// function createFuncMesh() {
-//     if (funcMesh) scene.remove(funcMesh);
-//     const points = funcClass.getPoints();
-//     const geometry = new THREE.BufferGeometry();
-//     const positions = [];
-//     const colors = [];
-    
-//     points.forEach(p => {
-//         positions.push(p.y, p.z, p.x);
-//         const col = funcClass.getColor(p.z);
-//         colors.push(((col >> 16) & 255)/255, ((col >> 8) & 255)/255, (col & 255)/255);
-//     });
-    
-//     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-//     geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-//     funcMesh = new THREE.Points(geometry, new THREE.PointsMaterial({ size: 0.1, vertexColors: true }));
-//     scene.add(funcMesh);
-// }
-
-
 
 function createFuncMesh() {
     if (funcMesh) scene.remove(funcMesh);
-    
-    
     funcMesh = funcClass.getSurfaceMesh(5, 80);
     scene.add(funcMesh);
-    
-    
+
     if (!window.lightsAdded) {
         const ambientLight = new THREE.AmbientLight(0x404040);
         const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -99,14 +86,16 @@ function createFuncMesh() {
     }
 }
 
-
 function createPointsMesh(points) {
     if (pointsMesh) scene.remove(pointsMesh);
     const geometry = new THREE.BufferGeometry();
     const positions = [];
     points.forEach(p => positions.push(p.y, p.z, p.x));
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    pointsMesh = new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0xff0000, size: 0.2 }));
+    pointsMesh = new THREE.Points(geometry, new THREE.PointsMaterial({ 
+        color: 0xff0000, 
+        size: 0.22 
+    }));
     scene.add(pointsMesh);
 }
 
@@ -117,25 +106,24 @@ function startAnimation() {
     if (iterInterval) clearInterval(iterInterval);
 
     algorithm.currentIter = 0;
-    algorithm.maxIterations = parseInt(maxIter.value);
+    algorithm.maxIterations = parseInt(maxIter.value) || 150;
 
-    if (algorithm instanceof TestAlgorithm2)
-        algorithm.xMin = parseFloat(xMin.value);
+    if (algorithm instanceof TestAlgorithm2) {
+        algorithm.xMin = parseFloat(xMin.value) || 0;
+    }
 
     const points = algorithm.getPopulation();
     createPointsMesh(points);
     displayPoints(points);
 
     runIterations();
-
 }
 
 funcSelector.addEventListener('change', (e) => {
     funcClass = functions[e.target.value];
     createFuncMesh();
-
     algorithm = createAlgorithm();
-    startAnimation();   
+    startAnimation();
 });
 
 algoSelector.addEventListener('change', (e) => {
@@ -149,20 +137,16 @@ algoSelector.addEventListener('change', (e) => {
     algo5Panel.style.display = e.target.value === '5' ? 'block' : 'none';
     algo6Panel.style.display = e.target.value === '6' ? 'block' : 'none';
     algo7Panel.style.display = e.target.value === '7' ? 'block' : 'none';
-    
+
     startAnimation();
 });
 
-
 restartBtn.addEventListener('click', () => {
-
     algorithm = createAlgorithm();
     startAnimation();
 });
 
-
 pauseBtn.addEventListener('click', () => {
-
     if (!isPaused) {
         clearInterval(iterInterval);
         pauseBtn.textContent = "Resume";
@@ -172,52 +156,47 @@ pauseBtn.addEventListener('click', () => {
         pauseBtn.textContent = "Pause";
         isPaused = false;
     }
-
 });
 
 function runIterations() {
-
     iterInterval = setInterval(() => {
-
         if (algorithm.currentIter >= algorithm.maxIterations) {
             clearInterval(iterInterval);
             return;
         }
-
         const points = algorithm.nextIteration();
         createPointsMesh(points);
         displayPoints(points);
-
-    }, 500);
-
+    }, 450);
 }
 
 function displayPoints(points) {
-
     const maxPoints = Math.min(points.length, 10);
     let text = "";
-
     for (let i = 0; i < maxPoints; i++) {
         const p = points[i];
         text += `Point ${i}: x=${p.x.toFixed(3)}  y=${p.y.toFixed(3)}  z=${p.z.toFixed(3)}\n`;
     }
-
     if (points.length > 10) {
         text += `\n... (${points.length - 10} more points)`;
     }
-
     pointsOutput.textContent = text;
 }
-maxIter.addEventListener('input', () => { 
-    if (algorithm instanceof TestAlgorithm1 || 
-        algorithm instanceof GeneticAlgorithm || 
-        algorithm instanceof ParticleSwarm) startAnimation(); 
-});
-maxIter.addEventListener('input', () => { if (algorithm instanceof TestAlgorithm1) startAnimation(); });
-xMin.addEventListener('change', () => { if (algorithm instanceof TestAlgorithm2) startAnimation(); });
-lrInput.addEventListener('input', () => {if (algorithm instanceof GradientDescent) startAnimation();});
-trajCountInput.addEventListener('input', () => {if (algorithm instanceof GradientDescent) startAnimation();});
 
+
+maxIter.addEventListener('input', () => {
+    if (algorithm instanceof TestAlgorithm1 ||
+        algorithm instanceof GeneticAlgorithm ||
+        algorithm instanceof ParticleSwarm ||
+        algorithm instanceof BeesAlgorithm ||
+        algorithm instanceof ArtificialImmuneNetwork) {
+        startAnimation();
+    }
+});
+
+xMin.addEventListener('change', () => { if (algorithm instanceof TestAlgorithm2) startAnimation(); });
+lrInput.addEventListener('input', () => { if (algorithm instanceof GradientDescent) startAnimation(); });
+trajCountInput.addEventListener('input', () => { if (algorithm instanceof GradientDescent) startAnimation(); });
 
 popSizeInput.addEventListener('change', () => { if (algorithm instanceof GeneticAlgorithm) startAnimation(); });
 pcInput.addEventListener('change', () => { if (algorithm instanceof GeneticAlgorithm) startAnimation(); });
@@ -228,21 +207,7 @@ inertiaInput.addEventListener('change', () => { if (algorithm instanceof Particl
 cognitiveInput.addEventListener('change', () => { if (algorithm instanceof ParticleSwarm) startAnimation(); });
 socialInput.addEventListener('change', () => { if (algorithm instanceof ParticleSwarm) startAnimation(); });
 
-maxIter.addEventListener('input', () => { 
-    if (algorithm instanceof TestAlgorithm1 || 
-        algorithm instanceof GeneticAlgorithm || 
-        algorithm instanceof ParticleSwarm || 
-        algorithm instanceof ArtificialImmuneNetwork) {
-        startAnimation(); 
-    }
-});
-
-
-const immunePopSizeInput = document.getElementById('immunePopSize');
-const cloneMultiplierInput = document.getElementById('cloneMultiplier');
-const mutationRateInput = document.getElementById('mutationRate');
-const suppressionThresholdInput = document.getElementById('suppressionThreshold');
-
+// Слушатели для Иммунной сети
 immunePopSizeInput.addEventListener('change', () => { 
     if (algorithm instanceof ArtificialImmuneNetwork) startAnimation(); 
 });
@@ -256,7 +221,6 @@ suppressionThresholdInput.addEventListener('change', () => {
     if (algorithm instanceof ArtificialImmuneNetwork) startAnimation(); 
 });
 
-
 scene.add(new THREE.AxesHelper(5));
 createFuncMesh();
 startAnimation();
@@ -265,6 +229,7 @@ function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
 }
+animate();
 
 function createAlgorithm() {
     const algoType = algoSelector.value;
@@ -291,10 +256,10 @@ function createAlgorithm() {
     else if (algoType === '5') {
         return new ParticleSwarm(
             funcClass,
-            parseInt(document.getElementById('swarmSize').value) || 50,
-            parseFloat(document.getElementById('inertia').value) || 0.7,
-            parseFloat(document.getElementById('cognitive').value) || 1.5,
-            parseFloat(document.getElementById('social').value) || 1.5
+            parseInt(swarmSizeInput.value) || 50,
+            parseFloat(inertiaInput.value) || 0.7,
+            parseFloat(cognitiveInput.value) || 1.5,
+            parseFloat(socialInput.value) || 1.5
         );
     }
     else if (algoType === '6') {
@@ -309,6 +274,6 @@ function createAlgorithm() {
             parseFloat(suppressionThresholdInput.value) || 0.15
         );
     }
-}
 
-animate();
+    return new TestAlgorithm1(); 
+}
