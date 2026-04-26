@@ -12,7 +12,6 @@ import BeesAlgorithm from './BeesAlgorithm.js';
 import SchafferN2Function from './SchafferN2Function.js';
 import StyblinskiTangFunction from './StyblinskiTangFunction.js';
 import RastriginFunction from './RastriginFunction.js';
-import ArtificialImmuneNetwork from './ArtificialImmuneNetwork.js';
 
 
 const scene = new THREE.Scene();
