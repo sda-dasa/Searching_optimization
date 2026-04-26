@@ -55,7 +55,7 @@ export default class BeesAlgorithm {
 
         let ranked = allPoints
             .map(p => ({ position: p, value: this.evaluate(p) }))
-            .sort((a, b) => a.value - b.value); // сортируем по возрастанию (минимум)
+            .sort((a, b) => a.value - b.value);
 
         if (ranked[0].value < this.bestValue) {
             this.bestValue = ranked[0].value;

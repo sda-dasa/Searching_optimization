@@ -13,6 +13,9 @@
             <option value="1">Sphere</option>
             <option value="2">Himmelblau</option>
             <option value="3">Rosenbrock</option>
+            <option value="4">ShafferN2</option>
+            <option value="5">Styblinski-Tang</option>
+            <option value="6">Rastrigin</option>            
         </select>
         <br>
         <select id="algoSelector">
@@ -22,6 +25,7 @@
             <option value="4">Genetic Algorithm (ГА)</option>
             <option value="5">Particle Swarm Optimization (PSO)</option>
             <option value="6">Bees Algorithm (Пчелиный рой)</option>
+            <option value="7">Artificial Immune Network (Иммунная сеть)</option>
         </select>
         <br>
         <div id="algo1Panel">
@@ -49,6 +53,12 @@
             <label>Пчел-разведчиков: <input id="scouts" type="number" value="20" min="10" max="100"></label><br>
             <label>Элитных участков: <input id="elite" type="number" value="3" min="1" max="10"></label><br>
             <label>Перспективных участков: <input id="best" type="number" value="6" min="2" max="15"></label>
+        </div>
+        <div id="algo7Panel" style="display: none;">
+            <label>Размер популяции: <input id="immunePopSize" type="number" value="60" min="20" max="200"></label><br>
+            <label>Коэффициент клонов: <input id="cloneMultiplier" type="number" value="8" min="2" max="20"></label><br>
+            <label>Сила мутации: <input id="mutationRate" type="number" step="0.05" value="0.3" min="0.1" max="1"></label><br>
+            <label>Порог подавления: <input id="suppressionThreshold" type="number" step="0.01" value="0.15" min="0.05" max="0.5"></label>
         </div>
         <h3>Current points</h3>
         <pre id="pointsOutput"></pre>

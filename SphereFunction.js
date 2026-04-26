@@ -27,7 +27,7 @@ export default class SphereFunction {
     }
 
     static evaluate(x,y){
-        return x*x + y*y;
+        return (1/2)*(x*x + y*y);
     }
 
 

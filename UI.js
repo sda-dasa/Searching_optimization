@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-// import Func1 from './Func1.js';
-// import Func2 from './Func2.js';
 import SphereFunction from './SphereFunction.js';
 import HimmelblauFunction from './HimmelblauFunction.js';
 import RosenbrockFunction from './RosenbrockFunction.js';
@@ -11,6 +9,11 @@ import GradientDescent from './GradientDescent.js';
 import GeneticAlgorithm from './GeneticAlgorithm.js';
 import ParticleSwarm from './ParticleSwarm.js';
 import BeesAlgorithm from './BeesAlgorithm.js';
+import SchafferN2Function from './SchafferN2Function.js';
+import StyblinskiTangFunction from './StyblinskiTangFunction.js';
+import RastriginFunction from './RastriginFunction.js';
+import ArtificialImmuneNetwork from './ArtificialImmuneNetwork.js';
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -45,7 +48,10 @@ const pcInput = document.getElementById('pc');
 const pmInput = document.getElementById('pm');
 
 const functions = {
-    '1': SphereFunction, '2': HimmelblauFunction, '3': RosenbrockFunction
+    '1': SphereFunction, '2': HimmelblauFunction, '3': RosenbrockFunction,
+    '4': SchafferN2Function,
+    '5': StyblinskiTangFunction, 
+    '6': RastriginFunction
 };
 
 let isPaused = false;
@@ -143,6 +149,7 @@ algoSelector.addEventListener('change', (e) => {
     algo4Panel.style.display = e.target.value === '4' ? 'block' : 'none';
     algo5Panel.style.display = e.target.value === '5' ? 'block' : 'none';
     algo6Panel.style.display = e.target.value === '6' ? 'block' : 'none';
+    algo7Panel.style.display = e.target.value === '7' ? 'block' : 'none';
     
     startAnimation();
 });
@@ -222,12 +229,32 @@ inertiaInput.addEventListener('change', () => { if (algorithm instanceof Particl
 cognitiveInput.addEventListener('change', () => { if (algorithm instanceof ParticleSwarm) startAnimation(); });
 socialInput.addEventListener('change', () => { if (algorithm instanceof ParticleSwarm) startAnimation(); });
 
-
 maxIter.addEventListener('input', () => { 
     if (algorithm instanceof TestAlgorithm1 || 
         algorithm instanceof GeneticAlgorithm || 
         algorithm instanceof ParticleSwarm || 
-        algorithm instanceof BeesAlgorithm) startAnimation(); 
+        algorithm instanceof ArtificialImmuneNetwork) {
+        startAnimation(); 
+    }
+});
+
+
+const immunePopSizeInput = document.getElementById('immunePopSize');
+const cloneMultiplierInput = document.getElementById('cloneMultiplier');
+const mutationRateInput = document.getElementById('mutationRate');
+const suppressionThresholdInput = document.getElementById('suppressionThreshold');
+
+immunePopSizeInput.addEventListener('change', () => { 
+    if (algorithm instanceof ArtificialImmuneNetwork) startAnimation(); 
+});
+cloneMultiplierInput.addEventListener('change', () => { 
+    if (algorithm instanceof ArtificialImmuneNetwork) startAnimation(); 
+});
+mutationRateInput.addEventListener('change', () => { 
+    if (algorithm instanceof ArtificialImmuneNetwork) startAnimation(); 
+});
+suppressionThresholdInput.addEventListener('change', () => { 
+    if (algorithm instanceof ArtificialImmuneNetwork) startAnimation(); 
 });
 
 
@@ -273,6 +300,15 @@ function createAlgorithm() {
     }
     else if (algoType === '6') {
         return new BeesAlgorithm(funcClass);
+    }
+    else if (algoType === '7') {
+        return new ArtificialImmuneNetwork(
+            funcClass,
+            parseInt(immunePopSizeInput.value) || 60,
+            parseInt(cloneMultiplierInput.value) || 8,
+            parseFloat(mutationRateInput.value) || 0.3,
+            parseFloat(suppressionThresholdInput.value) || 0.15
+        );
     }
 }
 
